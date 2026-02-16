@@ -1,0 +1,1 @@
+Thunder.py is an automated script I made for white noise while I sleep, I am very new when it comes to programming, as this is my first project, if any errors occur within the syntax, i would love to debug it. 
