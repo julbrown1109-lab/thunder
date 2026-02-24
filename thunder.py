@@ -8,52 +8,23 @@ import psutil
 import logging
 
 #Input your values into the 'changeme' section
-endhrs = changeme
 starthrs = changeme
+startmins = changeme
+endhrs = changeme 
+endmins = changeme
 
-#Definitions phase
-#Defines the current time and the hours and minutes that need to be defined
+conthrs = 0; contmins = 00
 now = datetime.now()
 hrs = now.hour
 mins = now.minute
-
-#Defining what time the audio should start
-start = hrs > starthrs 
-end = hrs < endhrs 
-
-#defining the times
-timecheck = start or end
-timestart = timecheck == True
-timeend = timecheck == False
-
-#for the mpv file
+start = (hrs >= starthrs and mins >= startmins)
+cont = (hrs < endhrs  and mins >= contmins)
+end = (hrs == endhrs and mins == endmins)
 Player = mpv.MPV(video=False)
 
-#Running the script 
-def run(): 
-	#Change the file path to your mp3
-	Player.play('/your/path/to/audio.mp3')
-	rest()
-
-#Checking when the audio ends and replaying if still within the time
-def rest():
-	Player.wait_for_playback()
-	if timestart:
-		run()
-	else: 
-		restart_program()
-#For the initial instance
-def play_audio():
-	print (f"playing audio at {now}")
-	run()
-def sleepytime():
-	while timestart:
-		now = datetime.now()
-		play_audio()
-#to run the script continuously
-def restart_program():
-	try: 
-		p = psutil.Process(os.getpid())
+def reset_program():
+	try:
+		p= psutil.Process(os.getpid())
 		for handler in p.get_open_files() + p.connections():
 			os.close(handler.fd)
 	except Exception as e:
@@ -62,17 +33,32 @@ def restart_program():
 	python = sys.executable
 	os.execl(python, python, *sys.argv)
 
-#Execution phase
-if timestart:
-	print("Have a good rest.")
+def play_audio():
+	now = datetime.now()
+	print(f"Playing audio at {now}")
+	Player.play('/home/jb/Documents/thunder/1sec.mp3')
+	Player.wait_for_playback()
+	checktime()
 
-while timeend:
+def checktime():
 	now = datetime.now()
 	hrs = now.hour
 	mins = now.minute
-	print(f"not yet, its only {hrs}:{mins} wait until {starthrs}:00")
-	time.sleep(60)
-	restart_program()
-else:
-	sleepytime()
+	start = (hrs >= starthrs and mins == startmins)
+	cont = (hrs < endhrs  and mins >= contmins)
+	end = (hrs == endhrs  and mins == endmins)
+	if  end == True:
+		print(f"{now} is past {endhrs}:{endmins}, audio will resume at {starthrs}:{startmins}.")
+		print("good morning")
+	if cont == True:
+		play_audio()
+	if start == True:
+		print('goodnight')
+		play_audio()
+	else:
+		time.sleep(30)
+		reset_program()
+checktime()
+
+
 
