@@ -36,7 +36,7 @@ def reset_program():
 def play_audio():
 	now = datetime.now()
 	print(f"Playing audio at {now}")
-	Player.play('/home/jb/Documents/thunder/1sec.mp3')
+	Player.play('/your/path/to/audio.mp3')
 	Player.wait_for_playback()
 	checktime()
 
