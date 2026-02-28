@@ -43,8 +43,11 @@ def play_audio():
 def checktime():
 	now = datetime.now()
 	hrs = now.hour
-	mins = now.minute
-	start = (hrs >= starthrs and mins == startmins)
+	mins = now.minute	
+	if mins >= 30:
+		   start = (hrs >= starthrs and mins >= startmins)    
+	if mins <= 30:
+		   start = (hrs >= starthrs and mins <= startmins)    
 	cont = (hrs < endhrs  and mins >= contmins)
 	end = (hrs == endhrs  and mins == endmins)
 	if  end == True:
